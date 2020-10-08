@@ -30,4 +30,4 @@ class DirectLinearTransform(object):
     def reproject_points(self, points_camera):
         projection_matrix = self.estimate_pose_dlt(points_camera)
         reprojected_points = self._k.dot(projection_matrix.dot(self._points_world.T)).T
-        return reprojected_points / np.expand_dims(reprojected_points[:, -1], axis=1)
+        return reprojected_points / np.expand_dims(reprojected_points[:, -1], axis=1), projection_matrix
