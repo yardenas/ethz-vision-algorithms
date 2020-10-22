@@ -16,4 +16,5 @@ class HarrisCornerDetector(object):
         sum_i_x_2 = cv.filter2D(i_x ** 2, -1, self._kernel, borderType=cv.BORDER_CONSTANT)
         sum_i_y_2 = cv.filter2D(i_y ** 2, -1, self._kernel, borderType=cv.BORDER_CONSTANT)
         sum_i_x_y = cv.filter2D(i_x * i_y, -1, self._kernel, borderType=cv.BORDER_CONSTANT)
-        return sum_i_x_2 * sum_i_y_2 - sum_i_x_y ** 2 - self._kappa * ((sum_i_x_2 + sum_i_y_2) ** 2)
+        result = sum_i_x_2 * sum_i_y_2 - sum_i_x_y ** 2 - self._kappa * ((sum_i_x_2 + sum_i_y_2) ** 2)
+        return np.where(result < 0.0, 0.0, result)

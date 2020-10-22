@@ -20,4 +20,5 @@ class HarrisCornerDetector(object):
         temp2 = np.sqrt(4 * (sum_i_x_y ** 2) + (sum_i_x_2 - sum_i_y_2) ** 2)
         lambda_1 = temp1 + temp2
         lambda_2 = temp1 - temp2
-        return np.minimum(lambda_1, lambda_2)
+        result = np.minimum(lambda_1, lambda_2)
+        return np.where(result < 0.0, 0.0, result)
