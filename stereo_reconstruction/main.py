@@ -10,9 +10,9 @@ def main():
     (left_image, right_image), _ = \
         zip(next(utils.images(os.path.join('data', 'left'), 'png', cv.IMREAD_GRAYSCALE)),
             next(utils.images(os.path.join('data', 'right'), 'png', cv.IMREAD_GRAYSCALE)))
-    size = (int(left_image.shape[0] / 2), int(left_image.shape[1] / 2))
-    cv.resize(left_image, size, left_image, interpolation=cv.INTER_LINEAR)
-    cv.resize(right_image, size, right_image, interpolation=cv.INTER_LINEAR)
+    size = (int(left_image.shape[1] / 2), int(left_image.shape[0] / 2))
+    left_image = cv.resize(left_image, size, interpolation=cv.INTER_LINEAR)
+    right_image = cv.resize(right_image, size, interpolation=cv.INTER_LINEAR)
     patch_radius = 5
     min_disp = 5
     max_disp = 50
