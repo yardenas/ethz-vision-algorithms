@@ -7,23 +7,24 @@ from point_tracker.harris import HarrisCornerDetector
 import point_tracker.utils as utils
 import point_tracker.plotting as plotting
 
-corner_patch_size = 9
-harris_kappa = 0.08
-non_maximum_suppression_radius = 8
-num_keypoints = 100
+corner_patch_size = 2
+sigma = 0.4
+harris_kappa = 0.15
+num_keypoints = 200
 
 
 def part_1():
     image, image_id = next(utils.images('data', 'png', cv.IMREAD_GRAYSCALE))
     shi_tomasi_response = ShiTomasiCornerDetector(corner_patch_size).response(image)
-    harris_response = HarrisCornerDetector(corner_patch_size, harris_kappa).response(image)
+    harris_response = HarrisCornerDetector(corner_patch_size, sigma, harris_kappa).response(image)
     plotting.plot_corner_responses(shi_tomasi_response, harris_response, image_id)
 
 
 def part_2():
     image, image_id = next(utils.images('data', 'png', cv.IMREAD_GRAYSCALE))
-    corners_coords = utils.select_keypoints(HarrisCornerDetector(corner_patch_size, harris_kappa).response(image),
-                                            num_keypoints)
+    corners_coords = utils.select_keypoints(
+        HarrisCornerDetector(corner_patch_size, sigma, harris_kappa).response(image),
+        num_keypoints)
     plotting.plot_harris_corners(image, corners_coords)
 
 
@@ -41,7 +42,7 @@ def part_5():
     match_lambda = 2
     images = [image for image, _ in utils.images('data', 'png', cv.IMREAD_GRAYSCALE)]
     frame = images[0]
-    prev_corners = utils.select_keypoints(HarrisCornerDetector(corner_patch_size, harris_kappa).response(frame),
+    prev_corners = utils.select_keypoints(HarrisCornerDetector(corner_patch_size, sigma, harris_kappa).response(frame),
                                           num_keypoints)
     prev_descriptors = utils.generate_descriptors(prev_corners, frame, descriptor_size)
     match_plotter = plotting.MatchesPlotter()
@@ -49,7 +50,7 @@ def part_5():
     for i in range(1, len(images)):
         frame = images[i]
         corners = utils.select_keypoints(
-            HarrisCornerDetector(corner_patch_size, harris_kappa).response(frame),
+            HarrisCornerDetector(corner_patch_size, sigma, harris_kappa).response(frame),
             num_keypoints)
         descriptors = utils.generate_descriptors(corners, frame, descriptor_size)
         assignments = utils.match_descriptors(descriptors, prev_descriptors, match_lambda)
