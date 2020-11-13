@@ -10,7 +10,7 @@ import point_tracker.plotting as plotting
 corner_patch_size = 9
 harris_kappa = 0.08
 non_maximum_suppression_radius = 8
-num_keypoints = 50
+num_keypoints = 100
 
 
 def part_1():
