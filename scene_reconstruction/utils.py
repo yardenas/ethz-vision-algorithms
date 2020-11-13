@@ -25,9 +25,8 @@ def disambiguate_relative_pose(r, u3, points_1, points_2, k_1, k_2):
     def count_frontal_points(r_test, t_test):
         projection_2 = k_2.dot(np.column_stack([r_test, t_test]))
         p_1 = linear_triangulation(points_1, points_2, m_1, projection_2)
-        p_2 = np.column_stack([r_test, t_test]).dot(
-            np.column_stack([p_1, np.ones(p_1.shape[0])]).T).T
-        return np.count_nonzero(p_1[:, -1] > 0.0) + np.count_nonzero(p_2[:, -1] > 0.0)
+        p_2 = np.column_stack([r_test, t_test]).dot(p_1.T).T
+        return np.count_nonzero(p_1[:, -2] > 0.0) + np.count_nonzero(p_2[:, -2] > 0.0)
 
     total_points_best = count_frontal_points(r[:, :, 0], u3)
     num_conf_1 = count_frontal_points(r[:, :, 0], -u3)
@@ -41,7 +40,6 @@ def disambiguate_relative_pose(r, u3, points_1, points_2, k_1, k_2):
         best_u = u3
     num_conf_3 = count_frontal_points(r[:, :, 1], -u3)
     if num_conf_3 > total_points_best:
-        total_points_best = num_conf_3
         best_r = r[:, :, 1]
         best_u = -u3
     return best_r, best_u

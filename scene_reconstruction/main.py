@@ -1,6 +1,7 @@
 import os
 
 import numpy as np
+import matplotlib.pyplot as plt
 import common.load_images
 import common.plot_trajectory_3d
 from scene_reconstruction.eight_point import compute_essential_matrix
@@ -32,8 +33,12 @@ def main():
     m_1 = k.dot(np.eye(3, 4))
     m_2 = k.dot(np.column_stack([r, t]))
     points_3d = linear_triangulation(points_1, points_2, m_1, m_2)
-    plotter = common.plot_trajectory_3d.PoseEstimationPlotter(points_3d)
+    plotter = common.plot_trajectory_3d.PoseEstimationPlotter(points_3d,
+                                                              xlim=(-1.5, 1.5),
+                                                              ylim=(-1.5, 1.5),
+                                                              zlim=(-1.5, 1.5))
     plotter.update(m_2)
+    plt.show()
 
 
 if __name__ == '__main__':

@@ -20,16 +20,16 @@ class Arrow3D(FancyArrowPatch):
 
 
 class PoseEstimationPlotter(object):
-    def __init__(self, points_world, pause=0.005):
+    def __init__(self, points_world, pause=0.005, xlim=(-0.3, 0.3), ylim=(-0.3, 0.3), zlim=(-0.6, 0.6)):
         self._pause = pause
         self._fig = plt.figure()
         self._ax = self._fig.add_subplot(111, projection='3d')
         self._ax.set_xlabel('X')
-        self._ax.set_xlim(-0.3, 0.3)
+        self._ax.set_xlim(*xlim)
         self._ax.set_ylabel('Y')
-        self._ax.set_ylim(-0.3, 0.3)
+        self._ax.set_ylim(*ylim)
         self._ax.set_zlabel('Z')
-        self._ax.set_zlim(-0.6, 0.6)
+        self._ax.set_zlim(*zlim)
         self._ax.invert_zaxis()
         arrow_prop_dict = dict(mutation_scale=20, arrowstyle='->', shrinkA=0, shrinkB=0)
         self._x = Arrow3D([0, 0], [0, 0], [0, 0], **arrow_prop_dict, color='r')
