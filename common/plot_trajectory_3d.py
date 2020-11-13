@@ -20,7 +20,8 @@ class Arrow3D(FancyArrowPatch):
 
 
 class PoseEstimationPlotter(object):
-    def __init__(self, points_world):
+    def __init__(self, points_world, pause=0.005):
+        self._pause = pause
         self._fig = plt.figure()
         self._ax = self._fig.add_subplot(111, projection='3d')
         self._ax.set_xlabel('X')
@@ -50,7 +51,7 @@ class PoseEstimationPlotter(object):
         self._y.set_positions_3d([y_start[0], y_end[0]], [y_start[1], y_end[1]], [y_start[2], y_end[2]])
         z_start, z_end = positions_from_translation_and_rotation(translation, rotation[:, 2])
         self._z.set_positions_3d([z_start[0], z_end[0]], [z_start[1], z_end[1]], [z_start[2], z_end[2]])
-        plt.pause(0.005)
+        plt.pause(self._pause)
         plt.draw()
 
 

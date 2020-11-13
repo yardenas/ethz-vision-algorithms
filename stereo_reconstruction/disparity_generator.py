@@ -1,6 +1,6 @@
 import numpy as np
 
-import stereo_reconstruction.utils as utils
+import common.match_descriptors
 
 
 class DisparityGenerator(object):
@@ -26,7 +26,7 @@ class DisparityGenerator(object):
         return disparities
 
     def get_patch(self, image, center_x, center_y):
-        return utils.get_descriptor(image, (center_x, center_y), self._descriptor_size)
+        return common.match_descriptors.get_descriptor(image, (center_x, center_y), self._descriptor_size)
 
     def epipolar_line_patches(self, left_image, right_image, row):
         cols = left_image.shape[1]

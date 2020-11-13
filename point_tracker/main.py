@@ -6,25 +6,29 @@ from point_tracker.shi_tomasi import ShiTomasiCornerDetector
 from point_tracker.harris import HarrisCornerDetector
 import point_tracker.utils as utils
 import point_tracker.plotting as plotting
+from common.plot_matches import MatchesPlotter
+import common.load_images
+import common.match_descriptors
 
 corner_patch_size = 2
-sigma = 0.4
+sigma = 1.6
+non_maximum_suppression = 10
 harris_kappa = 0.15
 num_keypoints = 200
 
 
 def part_1():
-    image, image_id = next(utils.images('data', 'png', cv.IMREAD_GRAYSCALE))
+    image, image_id = next(common.load_images.images('data', 'png', cv.IMREAD_GRAYSCALE))
     shi_tomasi_response = ShiTomasiCornerDetector(corner_patch_size).response(image)
     harris_response = HarrisCornerDetector(corner_patch_size, sigma, harris_kappa).response(image)
     plotting.plot_corner_responses(shi_tomasi_response, harris_response, image_id)
 
 
 def part_2():
-    image, image_id = next(utils.images('data', 'png', cv.IMREAD_GRAYSCALE))
+    image, image_id = next(common.load_images.images('data', 'png', cv.IMREAD_GRAYSCALE))
     corners_coords = utils.select_keypoints(
         HarrisCornerDetector(corner_patch_size, sigma, harris_kappa).response(image),
-        num_keypoints)
+        num_keypoints, non_maximum_suppression)
     plotting.plot_harris_corners(image, corners_coords)
 
 
@@ -40,20 +44,20 @@ def part_5():
     import matplotlib.pyplot as plt
     descriptor_size = 9
     match_lambda = 2
-    images = [image for image, _ in utils.images('data', 'png', cv.IMREAD_GRAYSCALE)]
+    images = [image for image, _ in common.load_images.images('data', 'png', cv.IMREAD_GRAYSCALE)]
     frame = images[0]
     prev_corners = utils.select_keypoints(HarrisCornerDetector(corner_patch_size, sigma, harris_kappa).response(frame),
-                                          num_keypoints)
-    prev_descriptors = utils.generate_descriptors(prev_corners, frame, descriptor_size)
-    match_plotter = plotting.MatchesPlotter()
+                                          num_keypoints, non_maximum_suppression)
+    prev_descriptors = common.match_descriptors.generate_descriptors(prev_corners, frame, descriptor_size)
+    match_plotter = MatchesPlotter()
     plt.ion()
     for i in range(1, len(images)):
         frame = images[i]
         corners = utils.select_keypoints(
             HarrisCornerDetector(corner_patch_size, sigma, harris_kappa).response(frame),
-            num_keypoints)
-        descriptors = utils.generate_descriptors(corners, frame, descriptor_size)
-        assignments = utils.match_descriptors(descriptors, prev_descriptors, match_lambda)
+            num_keypoints, non_maximum_suppression)
+        descriptors = common.match_descriptors.generate_descriptors(corners, frame, descriptor_size)
+        assignments = common.match_descriptors.match_descriptors(descriptors, prev_descriptors, match_lambda)
         match_plotter.plot_matches(frame, corners, prev_corners, assignments)
         prev_descriptors = descriptors
         prev_corners = corners

@@ -9,7 +9,8 @@ def linear_triangulation(points_1, points_2, m_1, m_2):
         np.concatenate((a, np.matmul(cross_matrix(point_2), m_2)), axis=0)
         _, _, vh = np.linalg.svd(a)
         p[i, :] = vh[-1, :]
-    p /= p[:, -1]
+    p = p / np.expand_dims(p[:, -1], axis=1)
+    return p[:, :-1]
 
 
 def cross_matrix(x):

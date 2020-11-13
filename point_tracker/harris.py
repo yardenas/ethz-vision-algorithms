@@ -7,7 +7,6 @@ import point_tracker.sobel as sobel
 class HarrisCornerDetector(object):
     def __init__(self, kernel_size, sigma, kappa):
         self._kernel = cv.getGaussianKernel(kernel_size, sigma)
-        # self._kernel = np.ones((kernel_size, kernel_size))
         self._kappa = kappa
 
     def response(self, image):

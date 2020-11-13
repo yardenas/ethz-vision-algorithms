@@ -3,13 +3,13 @@ import cv2 as cv
 import matplotlib.pyplot as plt
 
 from stereo_reconstruction.disparity_generator import DisparityGenerator
-import stereo_reconstruction.utils as utils
+import common.load_images
 
 
 def main():
     (left_image, right_image), _ = \
-        zip(next(utils.images(os.path.join('data', 'left'), 'png', cv.IMREAD_GRAYSCALE)),
-            next(utils.images(os.path.join('data', 'right'), 'png', cv.IMREAD_GRAYSCALE)))
+        zip(next(common.load_images.images(os.path.join('data', 'left'), 'png', cv.IMREAD_GRAYSCALE)),
+            next(common.load_images.images(os.path.join('data', 'right'), 'png', cv.IMREAD_GRAYSCALE)))
     size = (int(left_image.shape[1] / 2), int(left_image.shape[0] / 2))
     left_image = cv.resize(left_image, size, interpolation=cv.INTER_LINEAR)
     right_image = cv.resize(right_image, size, interpolation=cv.INTER_LINEAR)
