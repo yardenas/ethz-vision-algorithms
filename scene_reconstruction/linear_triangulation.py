@@ -9,7 +9,7 @@ def linear_triangulation(points_1, points_2, m_1, m_2):
     for i, (point_1, point_2) in enumerate(zip(points_1, points_2)):
         a = np.matmul(cross_matrix(point_1), m_1)
         a = np.concatenate((a, np.matmul(cross_matrix(point_2), m_2)), axis=0)
-        _, _, vh = np.linalg.svd(a, full_matrices=False)
+        _, _, vh = np.linalg.svd(a)
         p[i, :] = vh[-1, :]
     return common.tools.to_homogeneous(p)
 

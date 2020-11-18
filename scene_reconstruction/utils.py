@@ -5,15 +5,15 @@ from scene_reconstruction.linear_triangulation import linear_triangulation
 
 def decompose_essential_matrix(essential_matrix):
     u, _, vh = np.linalg.svd(essential_matrix)
-    u3 = u[:, 2]
+    u3 = u[:, -1]
     w = np.array([[0.0, -1.0, 0.0],
                   [1.0, 0.0, 0.0],
                   [0.0, 0.0, 1.0]])
-    r = u.dot(w).dot(vh)
-    r = np.stack([r, u.dot(w.T).dot(vh)], axis=2)
+    r_1 = np.matmul(u, np.matmul(w, vh)).T
+    r_2 = np.matmul(u, np.matmul(w.T, vh)).T
+    r = np.stack([r_1, r_2], axis=2)
     r[:, :, 0] *= np.sign(np.linalg.det(r[:, :, 0]))
     r[:, :, 1] *= np.sign(np.linalg.det(r[:, :, 1]))
-    u3 /= (np.linalg.norm(u3) + 1e-6)
     return r, u3
 
 

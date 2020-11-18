@@ -20,8 +20,10 @@ class Arrow3D(FancyArrowPatch):
 
 
 class PoseEstimationPlotter(object):
-    def __init__(self, points_world, pause=0.005, xlim=(-0.3, 0.3), ylim=(-0.3, 0.3), zlim=(-0.6, 0.6)):
+    def __init__(self, points_world, pause=0.005, xlim=(-0.3, 0.3), ylim=(-0.3, 0.3), zlim=(-0.6, 0.6),
+                 arrow_scale=0.1, invert_z=True):
         self._pause = pause
+        self._scale = arrow_scale
         self._fig = plt.figure()
         self._ax = self._fig.add_subplot(111, projection='3d')
         self._ax.set_xlabel('X')
@@ -30,7 +32,8 @@ class PoseEstimationPlotter(object):
         self._ax.set_ylim(*ylim)
         self._ax.set_zlabel('Z')
         self._ax.set_zlim(*zlim)
-        self._ax.invert_zaxis()
+        if invert_z:
+            self._ax.invert_zaxis()
         arrow_prop_dict = dict(mutation_scale=20, arrowstyle='->', shrinkA=0, shrinkB=0)
         self._x = Arrow3D([0, 0], [0, 0], [0, 0], **arrow_prop_dict, color='r')
         self._y = Arrow3D([0, 0], [0, 0], [0, 0], **arrow_prop_dict, color='g')
@@ -45,16 +48,16 @@ class PoseEstimationPlotter(object):
             projection_matrix, np.array([[0.0, 0.0, 0.0, 1.0]])], axis=0))
         translation = projection_matrix_inv[:-1, -1]
         rotation = projection_matrix_inv[:3, :3]
-        x_start, x_end = positions_from_translation_and_rotation(translation, rotation[:, 0])
+        x_start, x_end = positions_from_translation_and_rotation(translation, rotation[:, 0], self._scale)
         self._x.set_positions_3d([x_start[0], x_end[0]], [x_start[1], x_end[1]], [x_start[2], x_end[2]])
-        y_start, y_end = positions_from_translation_and_rotation(translation, rotation[:, 1])
+        y_start, y_end = positions_from_translation_and_rotation(translation, rotation[:, 1], self._scale)
         self._y.set_positions_3d([y_start[0], y_end[0]], [y_start[1], y_end[1]], [y_start[2], y_end[2]])
-        z_start, z_end = positions_from_translation_and_rotation(translation, rotation[:, 2])
+        z_start, z_end = positions_from_translation_and_rotation(translation, rotation[:, 2], self._scale)
         self._z.set_positions_3d([z_start[0], z_end[0]], [z_start[1], z_end[1]], [z_start[2], z_end[2]])
         plt.pause(self._pause)
         plt.draw()
 
 
-def positions_from_translation_and_rotation(start, direction, length=0.1):
-    end = start + length * direction
+def positions_from_translation_and_rotation(start, direction, length):
+    end = start + length * direction / np.linalg.norm(direction)
     return start, end
